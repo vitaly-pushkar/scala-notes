@@ -65,7 +65,7 @@ def greet(fullName: String) = fullName match {
 ```
 
 
-##Pattern matching
+## Pattern matching
 
 * Pattern matching is a dispatch mechanism: choosing which variant of a function is the correct one to call.
 * Patterns (cases) in pattern matching are ordered

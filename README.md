@@ -107,3 +107,65 @@ def hallOfFame = for {
 } yield name
 ```
 
+## Options
+* Scala tries to avoid null value which can lead to problems (like `NullPointerException`) by providing an `Option` type for values that may be present or not
+* Option[A] is a container for an optional value of type A. If the value of type A is present, the Option[A] is an instance of Some[A], containing the present value of type A. If the value is absent, the Option[A] is the object None.
+* Values of specific types `Some` or `None` should be used if one sets values herself, otherwise the companion object `Option` should be used for values that come from "outside" and can contain `null`s, which will create an instance of a corresponding subtype.
+
+```scala
+val greeting: Option[String] = Some("Hello world") // It's fine to use specific type for self-defined values
+
+val absentGreeting: Option[String] = Option(ThisJavaLibMightReturnNil.value) // absentGreeting will be None if ThisJavaLibMightReturnNil.value is null
+
+val presentGreeting: Option[String] = Option(ThisJavaLibMightReturnNil.value) // presentGreeting will be Some("Hello!") if ThisJavaLibMightReturnNil.value is a "Hello!" string
+```
+### Getting values
+* In order to extract a value from `Option` with a fallback to _default_ value if `Option` contains `None` is to use `getOrElse` method:
+
+```scala
+val user = User(2, "Johanna", "Doe", 30, None)
+println("Gender: " + user.gender.getOrElse("not specified")) // will print "not specified"
+```
+* It's also possible to extract a value with pattern matching on `Some` subtype, although a little bit too verbose:
+
+```scala
+val user = User(2, "Johanna", "Doe", 30, None)
+user.gender match {
+  case Some(gender) => println("Gender: " + gender)
+  case None => println("Gender: not specified")
+}
+```
+* Due to the fact that `Option` has monadic characteristics in Scala, it's possible to use all the typical methods one would use on a collection:
+
+```scala
+// foreach
+UserRepository.findById(2).foreach(user => println(user.firstName)) // The function passed to foreach will be called exactly once, if the Option is a Some, or never, if it is None
+```
+
+```scala
+// map
+val age = UserRepository.findById(1).map(_.age) // age is Some(32) for an existing user
+val age = UserRepository.findById(666).map(_.age) // None for unexisting user
+```
+
+* If a value returned from an `Option` is also an `Option` it's convenient to use `flatMap` to flatten any level of nesting:
+
+```scala
+val gender = UserRepository.findById(1).map(_.gender) // gender is Option[Option[String]]
+val gender1 = UserRepository.findById(1).flatMap(_.gender) // gender is Option[String] (Some("male")) for an existing user
+val gender2 = UserRepository.findById(666).flatMap(_.gender) // None for unexisting user
+
+```
+
+```scala
+//filter 
+UserRepository.findById(1).filter(_.age > 30) // Some(user), because age is > 30
+UserRepository.findById(2).filter(_.age > 30) // None, because age is <= 30
+UserRepository.findById(666).filter(_.age > 30) // None, because user is already None
+```
+
+* For-comprehentions
+_TODO_
+
+* Chaining options
+_TODO_

@@ -110,10 +110,10 @@ def hallOfFame = for {
 ## Options
 * Scala tries to avoid null value which can lead to problems (like `NullPointerException`) by providing an `Option` type for values that may be present or not
 * Option[A] is a container for an optional value of type A. If the value of type A is present, the Option[A] is an instance of Some[A], containing the present value of type A. If the value is absent, the Option[A] is the object None.
-* Values of specific types `Some` or `None` should be used if one sets values herself, otherwise the companion object `Option` should be used for values that come from "outside" and can contain `null`s, which will create an instance of a corresponding subtype.
+* Values of specific types `Some` or `None` should be used if one sets values manually, otherwise the companion object `Option` should be used for values that come from "outside" and can contain `null`s, which will create an instance of a corresponding subtype.
 
 ```scala
-val greeting: Option[String] = Some("Hello world") // It's fine to use specific type for self-defined values
+val greeting: Option[String] = Some("Hello world") // It's fine to use specific type for self-defined values. In this case, it's clear that "Hello world" string exists
 
 val absentGreeting: Option[String] = Option(ThisJavaLibMightReturnNil.value) // absentGreeting will be None if ThisJavaLibMightReturnNil.value is null
 
@@ -126,7 +126,7 @@ val presentGreeting: Option[String] = Option(ThisJavaLibMightReturnNil.value) //
 val user = User(2, "Johanna", "Doe", 30, None)
 println("Gender: " + user.gender.getOrElse("not specified")) // will print "not specified"
 ```
-* It's also possible to extract a value with pattern matching on `Some` subtype, although a little bit too verbose:
+* It's also possible to extract a value with pattern matching on `Some` subtype, although a little bit verbose:
 
 ```scala
 val user = User(2, "Johanna", "Doe", 30, None)
